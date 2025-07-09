@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Estimated Traffic Volume</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url("{{ url_for('static', filename='2.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 100px auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .volume {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00f5d4;
+            margin: 20px 0;
+        }
+
+        .map-link-btn {
+            display: inline-block;
+            background-color: #fdd835;
+            color: #000;
+            text-decoration: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .map-link-btn:hover {
+            background-color: #ffeb3b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estimated Traffic Volume</h1>
+        <div class="volume">{{ volume }}</div>
+        <a href="/map?lat={{ lat }}&lon={{ lon }}&volume={{ volume }}" class="map-link-btn">View on Map 🗺</a>
+    </div>
+</body>
+</html>

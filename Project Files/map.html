@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Traffic Volume Map</title>
+    <style>
+        html, body { height: 100%; margin: 0; }
+        #map { height: 100%; width: 100%; }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        function getColor(vol) {
+            if (vol > 4000) return 'red';
+            if (vol > 2000) return 'orange';
+            return 'green';
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                // Initialize map at live location
+                const map = L.map('map').setView([lat, lon], 14);
+
+                // Tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Mark your current location
+                L.circle([lat, lon], {
+                    radius: 300,
+                    color: 'blue',
+                    fillColor: 'blue',
+                    fillOpacity: 0.7
+                }).addTo(map).bindPopup("📍 You are here").openPopup();
+                fetch(`/traffic_data?lat=${lat}&lon=${lon}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        data.forEach(item => {
+                            L.circle([item.lat, item.lon], {
+                                radius: 300,
+                                color: getColor(item.volume),
+                                fillColor: getColor(item.volume),
+                                fillOpacity: 0.5
+                            }).addTo(map)
+                              .bindPopup(`Nearby Volume: ${item.volume}`);
+                        });
+                    });
+
+            }, error => {
+                alert("Failed to get your location.");
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    </script>
+</body>
+</html>

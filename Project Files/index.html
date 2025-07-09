@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic Volume Estimation</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("{{ url_for('static', filename='car_background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: white;
+        }
+        .form-wrapper {
+            width: 420px;
+            padding: 40px;
+            margin: 40px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        h1 {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .submit-btn {
+            background-color: #000;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background-color: #333;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-wrapper">
+        <h1>Traffic Volume Estimation</h1>
+        <form action="/predict" method="post" id="traffic-form">
+            <label for="holiday">Holiday:</label>
+            <select name="holiday" required>
+                <option value="None">None</option>
+                <option value="Columbus Day">Columbus Day</option>
+                <option value="Veterans Day">Veterans Day</option>
+                <option value="Thanksgiving Day">Thanksgiving Day</option>
+                <option value="Christmas Day">Christmas Day</option>
+                <option value="New Years Day">New Years Day</option>
+                <option value="Martin Luther King Jr Day">Martin Luther King Jr Day</option>
+            </select>
+
+            <label for="temp">Temp:</label>
+            <input type="number" name="temp" placeholder="Temperature" step="0.1" required>
+
+            <label for="rain">Rain:</label>
+            <input type="number" name="rain" placeholder="Rain" step="0.01" required>
+
+            <label for="snow">Snow:</label>
+            <input type="number" name="snow" placeholder="Snow" step="0.01" required>
+
+            <label for="weather">Weather:</label>
+            <select name="weather" required>
+                <option value="Clear">Clear</option>
+                <option value="Clouds">Clouds</option>
+                <option value="Rain">Rain</option>
+                <option value="Snow">Snow</option>
+                <option value="Fog">Fog</option>
+                <option value="Mist">Mist</option>
+                <option value="Drizzle">Drizzle</option>
+                <option value="Thunderstorm">Thunderstorm</option>
+            </select>
+
+            <label for="year">Year:</label>
+            <input type="number" name="year" placeholder="Year" min="2012" max="2030" required>
+
+            <label for="month">Month:</label>
+            <input type="number" name="month" placeholder="Month" min="1" max="12" required>
+
+            <label for="day">Day:</label>
+            <input type="number" name="day" placeholder="Day" min="1" max="31" required>
+
+            <label for="hour">Hour:</label>
+            <input type="number" name="hour" placeholder="Hour" min="0" max="23" required>
+
+            <label for="minute">Minute:</label>
+            <input type="number" name="minute" placeholder="Minute" min="0" max="59" required>
+
+            <label for="second">Second:</label>
+            <input type="number" name="second" placeholder="Second" min="0" max="59" required>
+
+    
+            <input type="hidden" name="lat" id="lat">
+            <input type="hidden" name="lon" id="lon">
+
+            <button class="submit-btn" type="submit">Predict</button>
+        </form>
+
+        {% if prediction_text %}
+        <div class="result">{{ prediction_text }}</div>
+        {% endif %}
+    </div>
+
+    <script>
+       
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                document.getElementById('lat').value = position.coords.latitude;
+                document.getElementById('lon').value = position.coords.longitude;
+            },
+            function (error) {
+                alert("❌ Location access denied. Please allow location access.");
+                console.error("Geolocation error:", error);
+            }
+        );
+    </script>
+</body>
+</html>
